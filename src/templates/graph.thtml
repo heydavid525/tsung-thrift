@@ -1,0 +1,165 @@
+[% INCLUDE header.thtml %]
+
+<div id="maincontent">
+ <h2 class="main">tsung - Graphical Reports</h2> 
+
+<div id="response_time">
+<h3>Response Time</h3> 
+<table>
+<tr><th>Transactions</th><th>Requests and connection establishment</th></tr>
+<tr>
+ <td>
+ <a href="images/graphes-Transactions-mean.[% ext %]">
+  <img class="graph" src="images/graphes-Transactions-mean_tn.png" alt="transaction response time"/> 
+ </a>
+ </td>
+ <td>
+  <a href="images/graphes-Perfs-mean.[% ext %]">
+   <img class="graph" src="images/graphes-Perfs-mean_tn.png" alt="mean request response time"/> 
+  </a>
+ </td>
+ </tr>
+</table>
+</div>
+
+<div id="throughput">
+<h3>Throughput</h3> 
+
+<table>
+<tr><th>Transactions</th><th>Requests</th>
+</tr>
+<tr>
+ <td>
+ <a href="images/graphes-Transactions-rate.[% ext %]">
+  <img class="graph" src="images/graphes-Transactions-rate_tn.png" alt="transaction rate"/> 
+ </a>
+ </td>
+ <td>
+  <a href="images/graphes-Perfs-rate.[% ext %]">
+   <img class="graph" src="images/graphes-Perfs-rate_tn.png" alt="req/sec"/>
+  </a>
+ </td>
+ </tr>
+[% IF async %]
+ <tr>
+    <th>Noack/Bidi</th>
+</tr>
+<tr>
+ <td>
+  <a href="images/graphes-Async-rate.[% ext %]">
+   <img class="graph" src="images/graphes-Async-rate_tn.png" alt="req/sec"/>
+  </a>
+ </td>
+ </tr>
+[% END %]
+<tr><th>Network traffic</th><th>New Users</th></tr>
+<tr>
+ <td>
+ <a href="images/graphes-Size-rate.[% ext %]">
+  <img class="graph" src="images/graphes-Size-rate_tn.png" alt="Kb/sec"/>
+ </a>
+ </td>
+ <td>
+  <a href="images/graphes-Users_Arrival-rate.[% ext %]">
+   <img class="graph" src="images/graphes-Users_Arrival-rate_tn.png" alt="visit/sec"/>
+  </a>
+ </td>
+ </tr>
+</table>
+</div>
+
+<div id="users">
+<h3>Simultaneous Users</h3> 
+<table>
+<tr><th>Simultaneous Users</th>
+[% IF match %]
+    <th>Matching responses</th>
+[% END %]
+</tr>
+<tr>
+ <td> <a href="images/graphes-Users-simultaneous.[% ext %]">
+  <img class="graph" src="images/graphes-Users-simultaneous_tn.png" alt="Users"/> 
+ </a>
+ </td>
+[% IF match %]
+ <td> <a href="images/graphes-Match-rate.[% ext %]">
+  <img class="graph" src="images/graphes-Match-rate_tn.png" alt="Match"/> 
+ </a>
+ </td>
+[% END %]
+ </tr>
+</table>
+</div>
+
+[% IF os_mon %]
+<div id="os_mon">
+<h3>Server OS monitoring</h3> 
+<table>
+<tr><th>CPU%</th><th>Free Memory</th></tr>
+<tr>
+ <td>
+ <a href="images/graphes-cpu-mean.[% ext %]">
+  <img class="graph" src="images/graphes-cpu-mean_tn.png" alt="cpu"/>
+ </a>
+ </td>
+ <td>
+  <a href="images/graphes-freemem-mean.[% ext %]">
+   <img class="graph" src="images/graphes-freemem-mean_tn.png" alt="free memory"/>
+  </a>
+ </td>
+ </tr>
+
+<tr><th>CPU Load</th></tr>
+<tr>
+ <td>
+ <a href="images/graphes-load-mean.[% ext %]">
+  <img class="graph" src="images/graphes-load-mean_tn.png" alt="load"/>
+ </a>
+ </td>
+ </tr>
+
+
+ [% IF os_mon_other %]
+
+    [% USE table(os_mon_other, cols=2) %]
+     [% FOREACH row = table.rows %]
+       <tr>
+          [% FOREACH key = row %]
+           <td>
+              <a href="images/graphes-$key-mean.[% ext %]">
+              <img class="graph" src="images/graphes-$key-mean_tn.png" alt="other"/>
+              </a>
+
+           </td>
+           [% END %]
+       </tr>
+     [% END %]
+ [% END %]
+
+</table>
+</div>
+[% END %]
+
+[% IF http %]
+<div id="http_status">
+<h3>HTTP return code Status (rate)</h3> 
+ <a href="images/graphes-HTTP_CODE-rate.[% ext %]">
+  <img class="graph" src="images/graphes-HTTP_CODE-rate_tn.png" alt="HTTP_CODE-rate"/> 
+ </a>
+</div>
+[% END %]
+
+[% IF errors %]
+<div id="errors">
+<h3>Errors (rate)</h3> 
+ <a href="images/graphes-Errors-rate.[% ext %]">
+  <img class="graph" src="images/graphes-Errors-rate_tn.png" alt="Errors-rate"/> 
+ </a>
+</div>
+[% END %]
+
+
+
+</div>
+
+[% INCLUDE footer.thtml %]

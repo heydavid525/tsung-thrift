@@ -1,0 +1,81 @@
+%define name tsung
+%define version @PACKAGE_VERSION@
+%define release 1
+
+Name: %{name}
+Version: %{version}
+Release: %{release}%{?dist}
+Summary: A distributed multi-protocol load testing tool
+
+Group: Development/Tools
+License: GPLv2
+URL: http://tsung.erlang-projects.org/
+Source0: http://tsung.erlang-projects.org/dist/%{name}-%{version}.tar.gz
+Vendor: Process-one
+Packager: Nicolas Niclausse <nicolas@niclux.org>
+
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+BuildRequires: erlang
+
+Requires: erlang
+Requires: perl(Template)
+
+%description
+tsung is a distributed load testing tool.
+It is protocol-independent and can currently be used to stress and
+benchmark HTTP, Jabber/XMPP, PostgreSQL, MySQL and LDAP servers.
+It simulates user behaviour using an XML description file, reports
+many measurements in real time (statistics can be customized with
+transactions, and graphics generated using gnuplot).
+For HTTP, it supports 1.0 and 1.1, has a proxy mode to record
+sessions, supports GET and POST methods, Cookies, and Basic
+WWW-authentication. It also has support for SSL.
+
+More information is available at http://tsung.erlang-projects.org/ .
+
+%prep
+%setup -q
+
+%build
+%configure --docdir=%{_docdir}/%{name}-%{version}
+make %{?_smp_mflags}
+
+%install
+rm -rf $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
+
+install -p -m 644 CHANGES CONTRIBUTORS COPYING README TODO \
+    $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,root,root,-)
+%doc %{_docdir}/%{name}-%{version}/*
+%{_bindir}/tsung
+%{_bindir}/tsung-recorder
+%{_bindir}/tsplot
+%{_libdir}/erlang/lib
+%{_libdir}/tsung
+%{_datadir}/tsung
+%{_mandir}/man1/tsung.1*
+%{_mandir}/man1/tsplot.1*
+%{_mandir}/man1/tsung-recorder.1*
+
+%changelog
+* Wed Sep 20 2006 Nicolas Niclausse <Nicolas.Niclausse@sophia.inria.fr> 1.2.1-1
+- update 'requires': erlang (as in fedora extra) instead of erlang-otp
+* Wed Apr 27 2005 Nicolas Niclausse <nicolas.niclausse@niclux.org> 1.0.2-1
+- new release
+* Thu Nov  18 2004 Nicolas Niclausse <nicolas.niclausse@niclux.org> 1.0.1-1
+- new release
+* Mon Aug  9 2004 Nicolas Niclausse <nicolas.niclausse@IDEALX.com> 1.0-1
+- new release
+* Mon Aug  9 2004 Nicolas Niclausse <nicolas.niclausse@IDEALX.com> 1.0.beta7-2
+- fix doc 
+* Mon Aug  9 2004 Nicolas Niclausse <nicolas.niclausse@IDEALX.com> 1.0.beta7-1
+- initial rpm 
+
+# end of file

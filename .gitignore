@@ -1,0 +1,7 @@
+# exclude executables
+ebin/*.beam
+
+# Don't commit docs
+/doc/*
+
+*.dump
