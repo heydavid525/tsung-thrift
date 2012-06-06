@@ -54,6 +54,14 @@ start_link(LogDir) ->
 %%----------------------------------------------------------------------
 init([LogDir]) ->
     ?LOG("starting",?INFO),
+    
+    %% DW: start up ts_static_data to read the logged files.
+    ProxyList = ["proxy_gw_ads", "proxy_ads_mds", "proxy_mds_mops"],
+    SDataProviders = [ generate_child_spec(ProxyName) || 
+      ProxyName <- ProxyList ],
+
+    ?DebugF("ChildSpecs = ~p~n", [SDataProviders]),
+    
     Config = {ts_config_server, {ts_config_server, start_link,
                                  [LogDir]}, transient, 2000,
               worker, [ts_config_server]},
@@ -86,6 +94,7 @@ init([LogDir]) ->
     Notify = {ts_job_notify, {ts_job_notify, start_link, []}, transient, 2000,
                worker, [ts_job_notify]},
     {ok,{{one_for_one,?retries,10},
+          SDataProviders ++ 
          [Config, Mon, Stats_Mon, Request_Mon, Page_Mon, Connect_Mon, Transaction_Mon,
           Match_Log, Timer, Msg, Notify,UserSup, ErlangSup, MuninSup,SNMPSup]}}.
 
@@ -93,3 +102,12 @@ init([LogDir]) ->
 %%% Internal functions
 %%%----------------------------------------------------------------------
 
+%% RecReqFile - Recorded request file (full path)
+generate_child_spec(ProxyName) ->
+  LogFilePath = filename:join(["/home", "produser", ".thrift_proxy"
+    , "recording", ProxyName ++ ".log"]),
+  ?DebugF("LogFilePath = ~p~n.", [LogFilePath]),
+  ServerName = list_to_atom("ts_" ++ ProxyName),
+  ChildID = ServerName,
+  {ChildID, {ts_static_data, start_link, [ServerName, LogFilePath]},
+    permanent, 2000, worker, [ts_static_data]}.

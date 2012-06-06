@@ -20,7 +20,8 @@
 <!ATTLIST server
      host NMTOKEN #REQUIRED
      port NMTOKEN #REQUIRED
-     type (ssl | tcp | udp | erlang | ssl6 | tcp6 | udp6) #REQUIRED>
+     type (ssl | tcp | udp | erlang | ssl6 | tcp6 | udp6 | adserver |
+           mds | mops | freq_server) #REQUIRED>
 
 <!ELEMENT clients (client+)>
 <!ELEMENT client (ip*) >
@@ -119,7 +120,9 @@ repeat | if | change_type | foreach | set_option)*>
     bidi         CDATA #IMPLIED
     persistent   (true | false) #IMPLIED
     probability   NMTOKEN #REQUIRED
-    type         (ts_jabber | ts_http | ts_raw | ts_pgsql | ts_ldap | ts_webdav |ts_mysql| ts_fs |ts_shell|ts_job) #REQUIRED>
+    type         (ts_jabber | ts_http | ts_raw | ts_pgsql | ts_ldap |
+                  ts_webdav | ts_mysql | ts_fs | ts_shell |ts_job |
+                  ts_oxthrift) #REQUIRED>
 
 <!ELEMENT change_type EMPTY>
 <!ATTLIST change_type
@@ -132,10 +135,50 @@ repeat | if | change_type | foreach | set_option)*>
     >
 
 <!ELEMENT request ( match*, dyn_variable*, ( http | jabber | raw |
-          pgsql | ldap | mysql |fs | shell | job ) )>
+          pgsql | ldap | mysql |fs | shell | job | 
+          oxthrift_ads_req | oxthrift_mds_req | oxthrift_mops_req |
+          oxthrift_freq_req) )>
 <!ATTLIST request
     subst (true|false) "false"
     >
+
+<!-- DW: oxthrift_ads_req is request going into ad server. -->
+<!ELEMENT oxthrift_ads_req EMPTY>
+<!ATTLIST oxthrift_ads_req 
+      adtype (afr_html | ajs_html | arj_html)   #REQUIRED
+      fct (requestAds | recordEvent)            #REQUIRED>
+
+<!ELEMENT oxthrift_mds_req EMPTY>
+<!ATTLIST oxthrift_mds_req 
+      adtype (afr_html | ajs_html | arj_html)   #REQUIRED
+      fct (requestAds | recordEvent)            #REQUIRED>
+
+<!ELEMENT oxthrift_mops_req EMPTY>
+<!ATTLIST oxthrift_mops_req 
+      adtype (afr_html | ajs_html | arj_html)   #REQUIRED
+      fct (get_opportunity)                     #REQUIRED>
+
+<!-- HDL's definition for frequency requests-->
+<!ELEMENT oxthrift_freq_req (#PCDATA|frequency_id|frequency_range)*>
+<!ATTLIST oxthrift_freq_req
+    type    ( count | count_all | increment | increment_all | delete | delete_all | close ) #REQUIRED
+    >
+
+<!ELEMENT frequency_id EMPTY>
+<!ATTLIST frequency_id
+     intCnt  NMTOKEN #REQUIRED
+     intMins NMTOKEN #REQUIRED
+     intBits NMTOKEN #REQUIRED
+     key     NMTOKEN #REQUIRED>
+
+<!ELEMENT frequency_range EMPTY>
+<!ATTLIST frequency_range
+     intCnt  NMTOKEN #REQUIRED
+     intMins NMTOKEN #REQUIRED
+     intBits NMTOKEN #REQUIRED
+     key     NMTOKEN #REQUIRED
+     duration     NMTOKEN #REQUIRED>
+
 
 <!ELEMENT match (#PCDATA)>
 <!ATTLIST match

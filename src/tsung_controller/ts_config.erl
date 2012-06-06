@@ -999,7 +999,12 @@ set_net_type("tcp6") -> gen_tcp6;
 set_net_type("udp")  -> gen_udp;
 set_net_type("udp6") -> gen_udp6;
 set_net_type("ssl")  -> ssl;
-set_net_type("ssl6") -> ssl6.
+set_net_type("ssl6") -> ssl6;
+%% DW
+set_net_type("adserver") -> ox_delivery_thrift;
+set_net_type("mds") -> ox_delivery_thrift;
+set_net_type("mops") -> ox_opporunity_thrift;
+set_net_type("freq_server") -> ox_freq_thrift.
 
 get_dynvar_name(VarNameStr) ->
     %% check if the var name is for an array (myvar[N])

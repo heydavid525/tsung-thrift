@@ -253,7 +253,13 @@ close_socket(gen_tcp6, Socket)-> gen_tcp:close(Socket);
 close_socket(ssl, Socket)     -> ssl:close(Socket);
 close_socket(ssl6, Socket)    -> ssl:close(Socket);
 close_socket(gen_udp, Socket) -> gen_udp:close(Socket);
-close_socket(gen_udp6, Socket)-> gen_udp:close(Socket).
+close_socket(gen_udp6, Socket)-> gen_udp:close(Socket);
+
+%% DW:
+close_socket(ox_delivery_thrift, Socket) -> thrift_client:close(Socket);
+close_socket(ox_opportunity_thrift, Socket) -> thrift_client:close(Socket);
+close_socket(ox_freq_thrift, Socket) -> thrift_client:close(Socket).
+
 
 %%----------------------------------------------------------------------
 %% datestr/0

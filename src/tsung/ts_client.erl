@@ -909,6 +909,22 @@ send(ssl6,Socket,Message,_,_)           -> ssl:send(Socket,Message);
 send(gen_udp6,Socket,Message,Host,Port) ->gen_udp:send(Socket,Host,Port,Message);
 send(erlang,Pid,Message,_,_) ->
     Pid ! Message,
+    ok;
+
+%% DW:
+send(ox_delivery_thrift,Socket,{Fun,Args},_,_) ->
+    {_NewClient, {ok, _Reply}} = thrift_client:call(Socket, Fun, Args),
+    %% might need to update TClient to NewClient and check reply
+    ok;
+
+send(ox_opportunity_thrift,Socket,{Fun,Args},_,_) ->
+    {_NewClient, {ok, _Reply}} = thrift_client:call(Socket, Fun, Args),
+    %% might need to update TClient to NewClient and check reply
+    ok;
+
+send(ox_freq_thrift,Socket,{Fun,Args},_,_) ->
+    {_NewClient, {ok, _Reply}} = thrift_client:call(Socket, Fun, Args),
+    %% might need to update TClient to NewClient and check reply
     ok.
 
 %%----------------------------------------------------------------------
@@ -923,7 +939,26 @@ connect(ssl6,Server, Port,Opts)       -> ssl:connect(Server, Port, Opts);
 connect(gen_udp6,_Server, _Port, Opts)-> gen_udp:open(0,Opts);
 connect(erlang,Server,Port,Opts)      ->
     Pid=spawn_link(ts_erlang,client,[self(),Server,Port,Opts]),
-    {ok, Pid}.
+    {ok, Pid};
+
+%% DW:
+connect(ox_delivery_thrift, Server, Port, _Opts) ->
+    % should return {ok, TClient}
+    ThriftSocketOpt = [{framed, true}],
+    ThriftDef = deliveryService_thrift,
+    thrift_client_util:new(Server, Port, ThriftDef, ThriftSocketOpt);
+    
+connect(ox_opportunity_thrift, Server, Port, _Opts) ->
+    % should return {ok, TClient}
+    ThriftSocketOpt = [{framed, true}],
+    ThriftDef = opportunityService_thrift,
+    thrift_client_util:new(Server, Port, ThriftDef, ThriftSocketOpt);
+
+connect(ox_freq_thrift, Server, Port, _Opts) ->
+    % should return {ok, TClient}
+    ThriftSocketOpt = [{framed, true}],
+    ThriftDef = frequencyService_thrift,
+    thrift_client_util:new(Server, Port, ThriftDef, ThriftSocketOpt).
 
 
 %%----------------------------------------------------------------------
@@ -955,7 +990,12 @@ protocol_options(gen_udp,#proto_opts{udp_rcv_size=Rcv, udp_snd_size=Snd}) ->
      {recbuf, Rcv},
      {sndbuf, Snd}
     ];
-protocol_options(erlang,_) -> [].
+protocol_options(erlang,_) -> [];
+
+%% DW:
+protocol_options(ox_delivery_thrift, _) -> [];
+protocol_options(ox_opporunity_thrift, _) -> [];
+protocol_options(ox_freq_thrift, _) -> [].
 
 
 
