@@ -66,6 +66,7 @@ has_cport(Node) ->
 %%----------------------------------------------------------------------
 init([]) ->
     ?LOG("starting",?INFO),
+    io:format("ts_sup/init~n"),
 
     ClientsSup   = {ts_client_sup, {ts_client_sup, start_link, []},
                     permanent, 2000, supervisor, [ts_client_sup]},

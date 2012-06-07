@@ -101,6 +101,7 @@ debug(From, Message, Level) ->
 
 debug(From, Message, Args, Level) ->
     Debug_level = ?config(debug_level),
+    %io:format("Debug_level = ~p~n", [Debug_level]),
     if
         Level =< Debug_level ->
             error_logger:info_msg("~20s:(~p:~p) "++ Message,
